@@ -13,7 +13,10 @@ use std::ops::Deref;
 use pyo3::prelude::*;
 #[cfg(feature = "py-bindings")]
 use pyo3::types::PyBytes;
+#[cfg(feature = "serde")]
+use serde::{Serialize, Serializer};
 
+#[cfg_attr(feature = "serde", derive(Serialize))]
 #[derive(Hash, Debug, Clone, Eq, PartialEq, PartialOrd, Ord)]
 pub struct Bytes(Vec<u8>);
 
@@ -156,6 +159,13 @@ impl<const N: usize> Debug for BytesImpl<N> {
 impl<const N: usize> fmt::Display for BytesImpl<N> {
     fn fmt(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
         formatter.write_str(&hex::encode(self.0))
+    }
+}
+
+#[cfg(feature = "serde")]
+impl<const N: usize> Serialize for BytesImpl<N> {
+    fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
+        serializer.serialize_str(&hex::encode(self.0))
     }
 }
 
