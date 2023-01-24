@@ -16,9 +16,12 @@ use chia_py_streamable_macro::PyStreamable;
 use pyo3::prelude::*;
 #[cfg(feature = "py-bindings")]
 use std::io::Cursor;
+#[cfg(feature = "serde")]
+use serde::{Serialize};
 
 #[repr(u8)]
 #[cfg_attr(feature = "py-bindings", derive(PyStreamable))]
+#[cfg_attr(feature = "serde", derive(Serialize))]
 #[derive(Streamable, Hash, Debug, Copy, Clone, Eq, PartialEq)]
 pub enum ProtocolMessageTypes {
     // Shared protocol (all services)
@@ -138,6 +141,7 @@ pub trait ChiaProtocolMessage {
 
 #[repr(u8)]
 #[cfg_attr(feature = "py-bindings", derive(PyStreamable))]
+#[cfg_attr(feature = "serde", derive(Serialize))]
 #[derive(Streamable, Hash, Debug, Copy, Clone, Eq, PartialEq)]
 pub enum NodeType {
     FullNode = 1,
